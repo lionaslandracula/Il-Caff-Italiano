@@ -1,0 +1,1642 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+<meta name="theme-color" content="#3E2723">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="Il Caffè">
+<title>Il Mondo del Caffè · 咖啡世界</title>
+<link rel="manifest" href="manifest.json">
+<link rel="icon" type="image/svg+xml" href="icon.svg">
+<link rel="apple-touch-icon" href="icon.svg">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Caveat:wght@500;700&family=Fraunces:ital,wght@0,400;0,600;0,800;1,500&family=Noto+Serif+SC:wght@400;600;800&family=Nunito:wght@400;600;700;800&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --cream: #FAF3E7;
+    --cream-deep: #F1E6D2;
+    --espresso: #3E2723;
+    --coffee: #6F4E37;
+    --caramel: #C68B59;
+    --gold: #D4A574;
+    --leaf: #5C8A4C;
+    --milk: #FFF8EC;
+    --ink: #2B4A8C;
+    --cherry: #C23B3B;
+    --choco: #4A2C20;
+    --shadow: 0 10px 25px rgba(62, 39, 35, 0.12), 0 4px 8px rgba(62, 39, 35, 0.08);
+    --shadow-lg: 0 20px 50px rgba(62, 39, 35, 0.18), 0 8px 16px rgba(62, 39, 35, 0.1);
+    --safe-top: env(safe-area-inset-top);
+    --safe-bottom: env(safe-area-inset-bottom);
+  }
+  * { margin: 0; padding: 0; box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
+  html, body {
+    height: 100%;
+    overflow: hidden;
+    background: var(--cream);
+    font-family: 'Nunito', 'Noto Serif SC', sans-serif;
+    color: var(--espresso);
+    overscroll-behavior: none;
+  }
+  body {
+    display: flex;
+    flex-direction: column;
+    height: 100dvh;
+  }
+
+  /* ======================== TOP BAR ======================== */
+  .topbar {
+    padding: calc(12px + var(--safe-top)) 20px 12px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    background: linear-gradient(180deg, var(--cream-deep), var(--cream));
+    border-bottom: 1px solid rgba(110,78,55,0.1);
+    z-index: 10;
+  }
+  .topbar h1 {
+    font-family: 'Fraunces', serif;
+    font-weight: 800;
+    font-size: 1.1rem;
+    color: var(--espresso);
+    letter-spacing: -0.01em;
+  }
+  .topbar h1 span {
+    font-family: 'Noto Serif SC', serif;
+    font-size: 0.85rem;
+    color: var(--coffee);
+    margin-left: 6px;
+    font-weight: 600;
+  }
+  .top-bean {
+    width: 40px;
+    height: 40px;
+    flex-shrink: 0;
+  }
+  .fav-counter {
+    display: flex;
+    align-items: center;
+    gap: 4px;
+    background: var(--milk);
+    padding: 6px 12px;
+    border-radius: 999px;
+    font-weight: 700;
+    font-size: 0.85rem;
+    color: var(--coffee);
+    box-shadow: var(--shadow);
+    cursor: pointer;
+    border: none;
+    transition: transform .15s;
+  }
+  .fav-counter:active { transform: scale(0.95); }
+
+  /* ======================== MAIN AREA ======================== */
+  .main {
+    flex: 1;
+    position: relative;
+    overflow: hidden;
+    background: radial-gradient(ellipse at top, #FDF8EE 0%, #F1E6D2 100%);
+  }
+  .view {
+    position: absolute;
+    inset: 0;
+    overflow-y: auto;
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity .3s;
+    -webkit-overflow-scrolling: touch;
+  }
+  .view.active {
+    opacity: 1;
+    pointer-events: auto;
+  }
+
+  /* ======================== HOME VIEW ======================== */
+  .home-view {
+    padding: 20px 20px 30px;
+  }
+  .hero {
+    text-align: center;
+    padding: 30px 10px 24px;
+  }
+  .hero-bean { width: 90px; height: 90px; margin: 0 auto 12px; }
+  .hero-title {
+    font-family: 'Fraunces', serif;
+    font-weight: 800;
+    font-size: 1.9rem;
+    line-height: 1.1;
+    color: var(--espresso);
+  }
+  .hero-title em { color: var(--coffee); font-style: italic; }
+  .hero-sub {
+    font-family: 'Noto Serif SC', serif;
+    color: var(--coffee);
+    font-weight: 700;
+    margin-top: 4px;
+    letter-spacing: 0.1em;
+  }
+  .hero-hand {
+    font-family: 'Caveat', cursive;
+    color: var(--ink);
+    font-size: 1.2rem;
+    margin-top: 12px;
+  }
+
+  .stat-row {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 10px;
+    margin: 0 0 22px;
+  }
+  .stat-card {
+    background: var(--milk);
+    padding: 12px 8px;
+    border-radius: 16px;
+    text-align: center;
+    box-shadow: var(--shadow);
+  }
+  .stat-num {
+    font-family: 'Fraunces', serif;
+    font-weight: 800;
+    font-size: 1.5rem;
+    color: var(--espresso);
+    line-height: 1;
+  }
+  .stat-label {
+    font-size: 0.7rem;
+    color: var(--coffee);
+    margin-top: 4px;
+    font-weight: 600;
+  }
+  .stat-label-zh {
+    font-family: 'Noto Serif SC', serif;
+    font-size: 0.65rem;
+    color: var(--coffee);
+    opacity: 0.7;
+  }
+
+  .section-title {
+    font-family: 'Fraunces', serif;
+    font-weight: 700;
+    font-size: 1.1rem;
+    color: var(--espresso);
+    margin: 18px 4px 10px;
+  }
+  .section-title .zh-inline {
+    font-family: 'Noto Serif SC', serif;
+    font-size: 0.85rem;
+    color: var(--coffee);
+    margin-left: 8px;
+    font-weight: 600;
+  }
+
+  .categories {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 12px;
+    margin-bottom: 16px;
+  }
+  .cat-card {
+    background: var(--milk);
+    border-radius: 20px;
+    padding: 16px 14px;
+    cursor: pointer;
+    border: 2px solid transparent;
+    transition: all .2s;
+    box-shadow: var(--shadow);
+    text-align: left;
+    font-family: inherit;
+    color: var(--espresso);
+  }
+  .cat-card:active { transform: scale(0.97); }
+  .cat-card .cat-icon {
+    font-size: 1.8rem;
+    margin-bottom: 6px;
+  }
+  .cat-card .cat-name {
+    font-family: 'Fraunces', serif;
+    font-weight: 700;
+    font-size: 1rem;
+    line-height: 1.1;
+  }
+  .cat-card .cat-name-zh {
+    font-family: 'Noto Serif SC', serif;
+    font-size: 0.8rem;
+    color: var(--coffee);
+    font-weight: 500;
+    margin-top: 2px;
+  }
+  .cat-card .cat-count {
+    font-size: 0.7rem;
+    color: var(--caramel);
+    margin-top: 6px;
+    font-weight: 700;
+  }
+
+  .mode-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 12px;
+  }
+  .mode-card {
+    background: linear-gradient(135deg, var(--espresso), var(--coffee));
+    color: var(--cream);
+    padding: 18px 16px;
+    border-radius: 20px;
+    cursor: pointer;
+    border: none;
+    font-family: inherit;
+    text-align: left;
+    box-shadow: var(--shadow);
+    transition: transform .15s;
+  }
+  .mode-card:active { transform: scale(0.97); }
+  .mode-card.secondary {
+    background: linear-gradient(135deg, var(--caramel), var(--gold));
+  }
+  .mode-card .mode-icon { font-size: 1.8rem; margin-bottom: 8px; display: block; }
+  .mode-card .mode-name {
+    font-family: 'Fraunces', serif;
+    font-weight: 700;
+    font-size: 1.05rem;
+    line-height: 1.1;
+  }
+  .mode-card .mode-name-zh {
+    font-family: 'Noto Serif SC', serif;
+    font-size: 0.8rem;
+    opacity: 0.85;
+    margin-top: 2px;
+  }
+
+  /* ======================== LESSON / SLIDE VIEW ======================== */
+  .lesson-view {
+    display: flex;
+    flex-direction: column;
+  }
+  .lesson-header {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 12px 16px;
+    background: var(--cream);
+    border-bottom: 1px solid rgba(110,78,55,0.1);
+  }
+  .back-btn {
+    width: 36px;
+    height: 36px;
+    border: none;
+    background: var(--milk);
+    border-radius: 50%;
+    font-size: 1.1rem;
+    color: var(--espresso);
+    cursor: pointer;
+    flex-shrink: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    box-shadow: var(--shadow);
+  }
+  .progress-bar {
+    flex: 1;
+    height: 6px;
+    background: var(--cream-deep);
+    border-radius: 3px;
+    overflow: hidden;
+  }
+  .progress-fill {
+    height: 100%;
+    background: linear-gradient(90deg, var(--caramel), var(--coffee));
+    transition: width .4s ease;
+    border-radius: 3px;
+  }
+  .page-indicator {
+    font-family: 'Fraunces', serif;
+    font-weight: 600;
+    font-size: 0.85rem;
+    color: var(--coffee);
+    min-width: 40px;
+    text-align: right;
+  }
+
+  .slide-container {
+    flex: 1;
+    position: relative;
+    overflow: hidden;
+  }
+  .slide {
+    position: absolute;
+    inset: 0;
+    padding: 20px 24px 80px;
+    display: flex;
+    flex-direction: column;
+    opacity: 0;
+    transition: opacity .4s ease, transform .4s ease;
+    pointer-events: none;
+    transform: translateX(40px);
+    overflow-y: auto;
+  }
+  .slide.active {
+    opacity: 1;
+    pointer-events: auto;
+    transform: translateX(0);
+  }
+  .slide-category {
+    text-align: center;
+    font-family: 'Caveat', cursive;
+    color: var(--caramel);
+    font-size: 1.1rem;
+    font-weight: 700;
+    letter-spacing: 0.05em;
+  }
+  .slide-head {
+    margin-top: 12px;
+    text-align: center;
+  }
+  .it-title {
+    font-family: 'Fraunces', serif;
+    font-weight: 800;
+    font-size: 2rem;
+    line-height: 1.1;
+    color: var(--espresso);
+    letter-spacing: -0.02em;
+  }
+  .it-title em { font-style: italic; color: var(--coffee); font-weight: 600; }
+  .zh-title {
+    font-family: 'Noto Serif SC', serif;
+    font-weight: 800;
+    font-size: 1.5rem;
+    color: var(--coffee);
+    margin-top: 4px;
+    letter-spacing: 0.05em;
+  }
+
+  .action-row {
+    display: flex;
+    justify-content: center;
+    gap: 10px;
+    margin-top: 12px;
+  }
+  .action-btn {
+    width: 40px;
+    height: 40px;
+    border: none;
+    background: var(--milk);
+    border-radius: 50%;
+    cursor: pointer;
+    font-size: 1.1rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    box-shadow: var(--shadow);
+    transition: transform .15s;
+    color: var(--espresso);
+  }
+  .action-btn:active { transform: scale(0.9); }
+  .action-btn.active-fav {
+    background: var(--cherry);
+    color: white;
+  }
+  .action-btn.active-learn {
+    background: var(--leaf);
+    color: white;
+  }
+
+  .slide-body {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 16px;
+    text-align: center;
+    padding: 14px 0;
+  }
+  .slide-foot {
+    text-align: center;
+    font-family: 'Fraunces', serif;
+    font-style: italic;
+    font-size: 0.92rem;
+    color: var(--coffee);
+    opacity: 0.8;
+    line-height: 1.4;
+    padding: 0 8px;
+  }
+  .slide-foot .zh {
+    font-family: 'Noto Serif SC', serif;
+    font-style: normal;
+    display: block;
+    margin-top: 4px;
+    font-size: 0.82rem;
+    color: var(--espresso);
+    opacity: 0.75;
+  }
+
+  /* ======================== SHARED VISUAL ELEMENTS ======================== */
+  .icon-circle {
+    width: 160px; height: 160px;
+    display: flex; align-items: center; justify-content: center;
+    background: radial-gradient(circle at 35% 30%, var(--milk), var(--cream-deep));
+    border-radius: 50%;
+    box-shadow: inset -6px -8px 16px rgba(110,78,55,0.08), var(--shadow);
+  }
+  .icon-circle svg { width: 70%; height: 70%; }
+
+  .equation {
+    display: flex; align-items: center; justify-content: center;
+    gap: 10px; flex-wrap: wrap;
+  }
+  .eq-item { display: flex; flex-direction: column; align-items: center; gap: 6px; }
+  .eq-box {
+    width: 76px; height: 76px;
+    display: flex; align-items: center; justify-content: center;
+    background: var(--milk); border-radius: 20px;
+    box-shadow: inset -3px -4px 8px rgba(110,78,55,0.07), 0 4px 10px rgba(62,39,35,0.08);
+  }
+  .eq-box svg { width: 70%; height: 70%; }
+  .eq-sign {
+    font-family: 'Fraunces', serif;
+    font-size: 1.8rem; font-weight: 600; color: var(--ink);
+  }
+  .eq-caption {
+    font-family: 'Caveat', cursive;
+    color: var(--ink); font-size: 1.1rem;
+    font-weight: 700; line-height: 1;
+  }
+  .eq-caption small {
+    display: block;
+    font-family: 'Noto Serif SC', serif;
+    font-size: 0.7rem; color: var(--coffee);
+    font-weight: 500; margin-top: 2px;
+  }
+  .flow {
+    display: flex; align-items: center; justify-content: center;
+    gap: 8px; flex-wrap: wrap;
+  }
+  .flow-node { display: flex; flex-direction: column; align-items: center; gap: 4px; }
+  .flow-arrow { font-family: 'Fraunces', serif; font-size: 1.6rem; color: var(--ink); }
+  .result-badge {
+    display: inline-block; padding: 10px 22px;
+    background: var(--espresso); color: var(--cream);
+    border-radius: 999px;
+    font-family: 'Fraunces', serif;
+    font-weight: 600; font-size: 1.2rem;
+    box-shadow: var(--shadow);
+  }
+  .result-badge .zh {
+    font-family: 'Noto Serif SC', serif;
+    font-weight: 600; font-size: 0.95rem;
+    margin-left: 8px; opacity: 0.9;
+  }
+  .bracket-row {
+    display: grid; grid-template-columns: auto 1fr;
+    align-items: center; gap: 14px;
+    width: 100%; max-width: 300px;
+  }
+  .bracket {
+    font-family: 'Fraunces', serif;
+    font-size: 5rem; color: var(--ink);
+    line-height: 0.8; font-weight: 300;
+  }
+  .bracket-items { display: flex; flex-direction: column; gap: 14px; }
+  .bracket-item {
+    display: flex; align-items: center; gap: 8px;
+    font-family: 'Caveat', cursive;
+    color: var(--ink); font-size: 1.3rem; font-weight: 700;
+  }
+  .bracket-item .zh-small {
+    font-family: 'Noto Serif SC', serif;
+    font-weight: 500; font-size: 0.85rem; color: var(--coffee);
+  }
+  .steam { animation: steam 3s ease-in-out infinite; transform-origin: center bottom; }
+  @keyframes steam {
+    0%, 100% { opacity: 0.6; transform: translateY(0) scaleY(1); }
+    50% { opacity: 1; transform: translateY(-4px) scaleY(1.1); }
+  }
+
+  /* ======================== NAV BUTTONS (slide view) ======================== */
+  .nav-buttons {
+    position: absolute;
+    bottom: 16px; left: 0; right: 0;
+    display: flex; justify-content: center; gap: 14px;
+    z-index: 5;
+  }
+  .nav-btn {
+    width: 48px; height: 48px; border: none;
+    background: var(--espresso); color: var(--cream);
+    border-radius: 50%; cursor: pointer; font-size: 1.3rem;
+    display: flex; align-items: center; justify-content: center;
+    transition: transform .15s, opacity .2s;
+    box-shadow: var(--shadow);
+  }
+  .nav-btn:active:not(:disabled) { transform: scale(0.92); }
+  .nav-btn:disabled { opacity: 0.3; cursor: not-allowed; }
+
+  /* ======================== FLASHCARD VIEW ======================== */
+  .flashcard-view { display: flex; flex-direction: column; }
+  .flashcard-stage {
+    flex: 1;
+    display: flex; flex-direction: column;
+    align-items: center; justify-content: center;
+    padding: 20px; gap: 20px;
+    overflow: hidden;
+  }
+  .flashcard {
+    width: 100%; max-width: 340px;
+    aspect-ratio: 3/4;
+    perspective: 1000px;
+    cursor: pointer;
+  }
+  .card-inner {
+    position: relative;
+    width: 100%; height: 100%;
+    transition: transform .6s;
+    transform-style: preserve-3d;
+  }
+  .flashcard.flipped .card-inner { transform: rotateY(180deg); }
+  .card-face {
+    position: absolute; inset: 0;
+    backface-visibility: hidden;
+    background: var(--milk);
+    border-radius: 28px;
+    box-shadow: var(--shadow-lg);
+    display: flex; flex-direction: column;
+    align-items: center; justify-content: center;
+    padding: 20px; gap: 16px; text-align: center;
+  }
+  .card-face.back {
+    transform: rotateY(180deg);
+    background: linear-gradient(135deg, var(--cream-deep), var(--milk));
+  }
+  .card-hint {
+    position: absolute;
+    top: 14px; right: 16px;
+    font-family: 'Caveat', cursive;
+    font-size: 0.9rem; color: var(--coffee); opacity: 0.5;
+  }
+  .card-face .card-category {
+    font-family: 'Caveat', cursive;
+    color: var(--caramel);
+    font-size: 1rem; font-weight: 700;
+  }
+  .card-face .it-big {
+    font-family: 'Fraunces', serif;
+    font-weight: 800;
+    font-size: 1.8rem;
+    color: var(--espresso);
+    line-height: 1.1;
+  }
+  .card-face .it-big em { color: var(--coffee); font-style: italic; }
+  .card-face .zh-big {
+    font-family: 'Noto Serif SC', serif;
+    font-weight: 700;
+    font-size: 1.5rem;
+    color: var(--coffee);
+  }
+  .card-face .desc-small {
+    font-family: 'Fraunces', serif;
+    font-style: italic;
+    font-size: 0.85rem;
+    color: var(--coffee);
+    opacity: 0.8;
+  }
+  .card-face .desc-small-zh {
+    font-family: 'Noto Serif SC', serif;
+    font-size: 0.8rem;
+    color: var(--espresso);
+    opacity: 0.7;
+    margin-top: 4px;
+  }
+
+  .card-controls {
+    display: flex; gap: 12px;
+    width: 100%; max-width: 340px;
+  }
+  .card-ctrl {
+    flex: 1;
+    padding: 14px;
+    border: none; border-radius: 16px;
+    font-family: 'Fraunces', serif;
+    font-weight: 700; font-size: 0.95rem;
+    cursor: pointer;
+    box-shadow: var(--shadow);
+    transition: transform .15s;
+  }
+  .card-ctrl:active { transform: scale(0.96); }
+  .card-ctrl.again {
+    background: var(--milk); color: var(--coffee);
+  }
+  .card-ctrl.good {
+    background: var(--leaf); color: white;
+  }
+  .card-ctrl small {
+    display: block; font-family: 'Noto Serif SC', serif;
+    font-size: 0.7rem; font-weight: 500;
+    opacity: 0.75; margin-top: 2px;
+  }
+
+  .flashcard-empty {
+    text-align: center; padding: 40px 30px;
+    font-family: 'Fraunces', serif;
+    color: var(--coffee); font-size: 1.1rem;
+    line-height: 1.5;
+  }
+  .flashcard-empty .zh {
+    display: block;
+    font-family: 'Noto Serif SC', serif;
+    margin-top: 8px;
+    font-size: 0.95rem;
+  }
+
+  /* ======================== FAVORITES VIEW ======================== */
+  .fav-view { padding: 0; }
+  .fav-list { padding: 14px 16px 24px; display: flex; flex-direction: column; gap: 10px; }
+  .fav-item {
+    background: var(--milk);
+    padding: 14px 16px;
+    border-radius: 16px;
+    box-shadow: var(--shadow);
+    display: flex; align-items: center; gap: 12px;
+    cursor: pointer;
+    border: none; width: 100%;
+    font-family: inherit;
+    text-align: left;
+  }
+  .fav-item:active { transform: scale(0.98); }
+  .fav-item-text { flex: 1; }
+  .fav-item-it {
+    font-family: 'Fraunces', serif;
+    font-weight: 700; font-size: 1.05rem;
+    color: var(--espresso);
+  }
+  .fav-item-zh {
+    font-family: 'Noto Serif SC', serif;
+    font-size: 0.85rem; color: var(--coffee);
+    margin-top: 2px;
+  }
+  .fav-item-tts {
+    width: 36px; height: 36px;
+    border: none; background: var(--cream-deep);
+    border-radius: 50%; cursor: pointer;
+    font-size: 1rem;
+    display: flex; align-items: center; justify-content: center;
+    flex-shrink: 0;
+  }
+  .empty-state {
+    padding: 60px 30px; text-align: center;
+    font-family: 'Fraunces', serif;
+    color: var(--coffee); line-height: 1.5;
+  }
+  .empty-state .big-icon { font-size: 3rem; margin-bottom: 12px; display: block; opacity: 0.5; }
+  .empty-state .zh { display: block; margin-top: 8px; font-family: 'Noto Serif SC', serif; font-size: 0.9rem; }
+
+  /* ======================== BOTTOM TAB BAR ======================== */
+  .tabbar {
+    display: flex;
+    background: white;
+    border-top: 1px solid rgba(110,78,55,0.1);
+    padding: 6px 0 calc(6px + var(--safe-bottom));
+    box-shadow: 0 -4px 10px rgba(62,39,35,0.05);
+    z-index: 10;
+  }
+  .tab-btn {
+    flex: 1; border: none; background: none;
+    padding: 8px 4px; cursor: pointer;
+    display: flex; flex-direction: column;
+    align-items: center; gap: 3px;
+    color: var(--coffee); opacity: 0.55;
+    transition: opacity .2s;
+    font-family: inherit;
+  }
+  .tab-btn.active { opacity: 1; color: var(--espresso); }
+  .tab-btn .tab-icon { font-size: 1.35rem; }
+  .tab-btn .tab-label {
+    font-size: 0.65rem; font-weight: 700;
+    font-family: 'Fraunces', serif;
+  }
+
+  /* ======================== INSTALL PROMPT ======================== */
+  .install-prompt {
+    position: fixed;
+    bottom: 80px; left: 16px; right: 16px;
+    background: var(--espresso); color: var(--cream);
+    padding: 14px 16px; border-radius: 18px;
+    box-shadow: var(--shadow-lg);
+    display: none; align-items: center; gap: 12px;
+    z-index: 100;
+    animation: slideUp .4s ease;
+  }
+  .install-prompt.show { display: flex; }
+  @keyframes slideUp { from { transform: translateY(100px); } to { transform: translateY(0); } }
+  .install-prompt-text {
+    flex: 1; font-size: 0.85rem; line-height: 1.3;
+  }
+  .install-prompt-text small { display: block; opacity: 0.7; font-size: 0.75rem; font-family: 'Noto Serif SC', serif; }
+  .install-prompt button {
+    border: none; padding: 8px 14px; border-radius: 10px;
+    background: var(--caramel); color: white;
+    font-weight: 700; cursor: pointer;
+    font-family: inherit; font-size: 0.85rem;
+  }
+  .install-prompt .close-x {
+    background: transparent; color: var(--cream);
+    padding: 4px 8px; font-size: 1rem;
+  }
+</style>
+</head>
+<body>
+
+<!-- ================= TOP BAR ================= -->
+<header class="topbar">
+  <svg class="top-bean" viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
+    <defs>
+      <radialGradient id="beanGrad" cx="0.35" cy="0.35">
+        <stop offset="0%" stop-color="#9B6B4F"/>
+        <stop offset="60%" stop-color="#6F4E37"/>
+        <stop offset="100%" stop-color="#3E2723"/>
+      </radialGradient>
+      <radialGradient id="leafGrad" cx="0.4" cy="0.3">
+        <stop offset="0%" stop-color="#7DB068"/>
+        <stop offset="100%" stop-color="#4A7339"/>
+      </radialGradient>
+    </defs>
+    <ellipse cx="50" cy="50" rx="24" ry="32" fill="url(#beanGrad)"/>
+    <path d="M 50 20 Q 46 50 50 80" stroke="#2B1A15" stroke-width="3" fill="none" stroke-linecap="round"/>
+    <ellipse cx="42" cy="36" rx="5" ry="9" fill="rgba(255,255,255,0.18)"/>
+  </svg>
+  <h1>Il Caffè <span>咖啡</span></h1>
+  <button class="fav-counter" id="favCounter" aria-label="Preferiti">
+    <span>❤️</span><span id="favCount">0</span>
+  </button>
+</header>
+
+<!-- ================= MAIN ================= -->
+<main class="main">
+
+  <!-- ========== HOME VIEW ========== -->
+  <section class="view home-view active" id="view-home">
+    <div class="hero">
+      <svg class="hero-bean" viewBox="0 0 100 100">
+        <ellipse cx="50" cy="50" rx="28" ry="36" fill="url(#beanGrad)" style="filter: drop-shadow(0 6px 10px rgba(62,39,35,0.2));"/>
+        <path d="M 50 15 Q 46 50 50 85" stroke="#2B1A15" stroke-width="3" fill="none" stroke-linecap="round"/>
+        <ellipse cx="42" cy="35" rx="6" ry="10" fill="rgba(255,255,255,0.18)"/>
+      </svg>
+      <div class="hero-title">Il Mondo<br><em>del Caffè</em></div>
+      <div class="hero-sub">咖啡的世界</div>
+      <div class="hero-hand">Dal chicco alla tazza · 从豆到杯</div>
+    </div>
+
+    <div class="stat-row">
+      <div class="stat-card">
+        <div class="stat-num" id="statTotal">17</div>
+        <div class="stat-label">Lezioni</div>
+        <div class="stat-label-zh">总课程</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-num" id="statLearned">0</div>
+        <div class="stat-label">Imparate</div>
+        <div class="stat-label-zh">已学会</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-num" id="statFav">0</div>
+        <div class="stat-label">Preferiti</div>
+        <div class="stat-label-zh">收藏</div>
+      </div>
+    </div>
+
+    <div class="section-title">Categorie<span class="zh-inline">分类学习</span></div>
+    <div class="categories" id="categoriesGrid"></div>
+
+    <div class="section-title">Modalità<span class="zh-inline">学习模式</span></div>
+    <div class="mode-grid">
+      <button class="mode-card" onclick="startLearn('all')">
+        <span class="mode-icon">📖</span>
+        <div class="mode-name">Tutte le lezioni</div>
+        <div class="mode-name-zh">浏览全部</div>
+      </button>
+      <button class="mode-card secondary" onclick="showView('flashcard')">
+        <span class="mode-icon">🎴</span>
+        <div class="mode-name">Flashcard</div>
+        <div class="mode-name-zh">闪卡练习</div>
+      </button>
+    </div>
+  </section>
+
+  <!-- ========== LESSON VIEW ========== -->
+  <section class="view lesson-view" id="view-lesson">
+    <div class="lesson-header">
+      <button class="back-btn" onclick="showView('home')">‹</button>
+      <div class="progress-bar"><div class="progress-fill" id="progressFill"></div></div>
+      <span class="page-indicator" id="pageIndicator">1/17</span>
+    </div>
+    <div class="slide-container" id="slideContainer"></div>
+    <div class="nav-buttons">
+      <button class="nav-btn" id="prevBtn" onclick="prevSlide()">‹</button>
+      <button class="nav-btn" id="nextBtn" onclick="nextSlide()">›</button>
+    </div>
+  </section>
+
+  <!-- ========== FLASHCARD VIEW ========== -->
+  <section class="view flashcard-view" id="view-flashcard">
+    <div class="lesson-header">
+      <button class="back-btn" onclick="showView('home')">‹</button>
+      <div class="progress-bar"><div class="progress-fill" id="fcProgress"></div></div>
+      <span class="page-indicator" id="fcIndicator">1/17</span>
+    </div>
+    <div class="flashcard-stage" id="flashcardStage"></div>
+  </section>
+
+  <!-- ========== FAVORITES VIEW ========== -->
+  <section class="view fav-view" id="view-fav">
+    <div class="lesson-header">
+      <button class="back-btn" onclick="showView('home')">‹</button>
+      <h2 style="font-family:'Fraunces',serif;font-size:1.1rem;flex:1;text-align:center;">
+        Preferiti <span style="font-family:'Noto Serif SC',serif;font-size:0.85rem;color:var(--coffee);">收藏</span>
+      </h2>
+      <div style="width:36px;"></div>
+    </div>
+    <div id="favListContainer"></div>
+  </section>
+
+</main>
+
+<!-- ================= TAB BAR ================= -->
+<nav class="tabbar">
+  <button class="tab-btn active" data-view="home" onclick="showView('home')">
+    <span class="tab-icon">🏠</span>
+    <span class="tab-label">Home</span>
+  </button>
+  <button class="tab-btn" data-view="lesson" onclick="startLearn('all')">
+    <span class="tab-icon">📖</span>
+    <span class="tab-label">Impara</span>
+  </button>
+  <button class="tab-btn" data-view="flashcard" onclick="showView('flashcard')">
+    <span class="tab-icon">🎴</span>
+    <span class="tab-label">Card</span>
+  </button>
+  <button class="tab-btn" data-view="fav" onclick="showView('fav')">
+    <span class="tab-icon">⭐</span>
+    <span class="tab-label">Preferiti</span>
+  </button>
+</nav>
+
+<!-- Install prompt -->
+<div class="install-prompt" id="installPrompt">
+  <div class="install-prompt-text">
+    Installa l'app sul telefono!
+    <small>安装到手机主屏幕，离线也能学</small>
+  </div>
+  <button id="installBtn">Installa</button>
+  <button class="close-x" onclick="document.getElementById('installPrompt').classList.remove('show')">✕</button>
+</div>
+
+<script>
+/* ==================== DATA ==================== */
+const LESSONS = [
+  {
+    id: 'cover', category: 'Introduzione', category_zh: '引子',
+    it: "Il Mondo del Caffè", zh: "咖啡的世界",
+    foot_it: "Dal chicco alla tazza · una guida visiva", foot_zh: "从豆到杯 · 视觉图解",
+    tts: "Il Mondo del Caffè",
+    body: `<svg width="120" height="120" viewBox="0 0 100 100">
+      <ellipse cx="50" cy="50" rx="28" ry="36" fill="url(#beanGrad)" style="filter: drop-shadow(0 6px 10px rgba(62,39,35,0.2));"/>
+      <path d="M 50 15 Q 46 50 50 85" stroke="#2B1A15" stroke-width="3" fill="none" stroke-linecap="round"/>
+      <ellipse cx="42" cy="35" rx="6" ry="10" fill="rgba(255,255,255,0.18)"/>
+    </svg>`
+  },
+  {
+    id: 'tree', category: 'Origine', category_zh: '起源',
+    it: "L'albero del caffè", zh: "咖啡树",
+    foot_it: "Due varietà principali coltivate nel mondo", foot_zh: "世界上主要栽培的两大品种",
+    tts: "L'albero del caffè ha due varietà principali: Arabica e Robusta",
+    body: `
+      <svg viewBox="0 0 200 200" width="160" height="160">
+        <path d="M 100 180 L 100 100" stroke="#4A2C20" stroke-width="5" stroke-linecap="round"/>
+        <ellipse cx="70" cy="80" rx="30" ry="16" fill="url(#leafGrad)" transform="rotate(-20 70 80)"/>
+        <ellipse cx="130" cy="80" rx="30" ry="16" fill="url(#leafGrad)" transform="rotate(20 130 80)"/>
+        <ellipse cx="100" cy="60" rx="28" ry="14" fill="url(#leafGrad)"/>
+        <circle cx="75" cy="95" r="7" fill="#C23B3B"/>
+        <circle cx="125" cy="95" r="7" fill="#C23B3B"/>
+        <circle cx="100" cy="75" r="7" fill="#C23B3B"/>
+        <circle cx="88" cy="110" r="7" fill="#C23B3B"/>
+        <circle cx="112" cy="110" r="7" fill="#C23B3B"/>
+      </svg>
+      <div class="bracket-row">
+        <div class="bracket">&#123;</div>
+        <div class="bracket-items">
+          <div class="bracket-item">Arabica <span class="zh-small">阿拉比卡</span></div>
+          <div class="bracket-item">Robusta <span class="zh-small">罗布斯塔</span></div>
+        </div>
+      </div>`
+  },
+  {
+    id: 'arabica', category: 'Origine', category_zh: '起源',
+    it: "Arabica", zh: "阿拉比卡",
+    foot_it: "Aromatico, dolce, con acidità equilibrata", foot_zh: "香气浓郁，口感柔和，酸度平衡",
+    tts: "Arabica produce il caffè specialty. Aromatico, dolce, con acidità equilibrata.",
+    body: `
+      <div class="flow">
+        <div class="flow-node">
+          <div class="eq-box" style="background: var(--milk);">
+            <svg viewBox="0 0 60 60"><ellipse cx="30" cy="30" rx="14" ry="20" fill="url(#beanGrad)"/><path d="M 30 12 Q 27 30 30 48" stroke="#2B1A15" stroke-width="2" fill="none"/></svg>
+          </div>
+          <span class="eq-caption">Arabica<small>阿拉比卡</small></span>
+        </div>
+        <div class="flow-arrow">→</div>
+        <div class="flow-node">
+          <svg width="70" height="70" viewBox="0 0 70 70">
+            <rect x="10" y="15" width="50" height="45" rx="6" fill="#FFF" stroke="#6F4E37" stroke-width="2.5"/>
+            <ellipse cx="35" cy="37" rx="8" ry="11" fill="url(#beanGrad)"/>
+            <path d="M 35 28 Q 33 37 35 46" stroke="#2B1A15" stroke-width="1.5" fill="none"/>
+          </svg>
+          <span class="eq-caption">Specialty<small>精品咖啡</small></span>
+        </div>
+      </div>
+      <div class="result-badge">Caffè Specialty<span class="zh">精品咖啡</span></div>`
+  },
+  {
+    id: 'robusta', category: 'Origine', category_zh: '起源',
+    it: "Robusta", zh: "罗布斯塔",
+    foot_it: "Più forte, più caffeina, più amaro", foot_zh: "口感强烈，咖啡因含量高，苦味明显",
+    tts: "Robusta produce il caffè solubile. Più forte, più caffeina, più amaro.",
+    body: `
+      <div class="flow">
+        <div class="flow-node">
+          <div class="eq-box" style="background: var(--milk);">
+            <svg viewBox="0 0 60 60"><ellipse cx="30" cy="30" rx="16" ry="18" fill="url(#beanGrad)"/><path d="M 30 14 Q 28 30 30 46" stroke="#2B1A15" stroke-width="2" fill="none"/></svg>
+          </div>
+          <span class="eq-caption">Robusta<small>罗布斯塔</small></span>
+        </div>
+        <div class="flow-arrow">→</div>
+        <div class="flow-node">
+          <svg width="80" height="70" viewBox="0 0 80 70">
+            <rect x="8" y="18" width="64" height="38" rx="6" fill="#C68B59" stroke="#6F4E37" stroke-width="2.5"/>
+            <line x1="8" y1="28" x2="72" y2="28" stroke="#6F4E37" stroke-width="1.5"/>
+            <line x1="8" y1="38" x2="72" y2="38" stroke="#6F4E37" stroke-width="1.5"/>
+            <line x1="8" y1="46" x2="72" y2="46" stroke="#6F4E37" stroke-width="1.5"/>
+          </svg>
+          <span class="eq-caption">Solubile<small>速溶咖啡</small></span>
+        </div>
+      </div>
+      <div class="result-badge">Caffè Solubile<span class="zh">速溶咖啡</span></div>`
+  },
+  {
+    id: 'cherry', category: 'Origine', category_zh: '起源',
+    it: "La ciliegia del caffè", zh: "咖啡樱桃",
+    foot_it: "All'interno del frutto si nascondono i chicchi verdi", foot_zh: "果实内部藏着绿色的咖啡生豆",
+    tts: "La ciliegia del caffè: all'interno del frutto si nascondono i chicchi verdi.",
+    body: `
+      <div class="icon-circle">
+        <svg viewBox="0 0 120 120">
+          <path d="M 50 20 Q 60 10 70 20" stroke="#4A5D2E" stroke-width="3" fill="none" stroke-linecap="round"/>
+          <ellipse cx="45" cy="22" rx="12" ry="5" fill="url(#leafGrad)" transform="rotate(-30 45 22)"/>
+          <circle cx="50" cy="55" r="22" fill="#C23B3B"/>
+          <circle cx="75" cy="70" r="22" fill="#A02828"/>
+          <ellipse cx="42" cy="48" rx="7" ry="10" fill="rgba(255,255,255,0.3)"/>
+        </svg>
+      </div>
+      <div class="flow-arrow" style="transform: rotate(90deg);">→</div>
+      <div class="eq-item">
+        <div class="eq-box">
+          <svg viewBox="0 0 60 60"><ellipse cx="30" cy="30" rx="14" ry="20" fill="#A8B86C"/><path d="M 30 12 Q 27 30 30 48" stroke="#5C6B30" stroke-width="2" fill="none"/></svg>
+        </div>
+        <span class="eq-caption">Chicco verde<small>咖啡生豆</small></span>
+      </div>`
+  },
+  {
+    id: 'maillard', category: 'Trasformazione', category_zh: '转化',
+    it: "Reazione di Maillard", zh: "美拉德反应",
+    foot_it: "La magia che dà sapore al caffè tostato", foot_zh: "让烘焙咖啡散发香气的魔法反应",
+    tts: "Reazione di Maillard: proteine più zuccheri producono aromi e caramello.",
+    body: `
+      <div class="equation">
+        <div class="eq-item">
+          <div class="eq-box">
+            <svg viewBox="0 0 60 60">
+              <path d="M 10 30 Q 20 20 30 30 T 50 30" stroke="#C68B59" stroke-width="4" fill="none" stroke-linecap="round"/>
+              <path d="M 10 40 Q 20 30 30 40 T 50 40" stroke="#C68B59" stroke-width="4" fill="none" stroke-linecap="round"/>
+            </svg>
+          </div>
+          <span class="eq-caption">Proteine<small>蛋白质</small></span>
+        </div>
+        <span class="eq-sign">+</span>
+        <div class="eq-item">
+          <div class="eq-box">
+            <svg viewBox="0 0 60 60">
+              <circle cx="22" cy="30" r="8" fill="#6F4E37"/>
+              <circle cx="38" cy="35" r="10" fill="#6F4E37"/>
+            </svg>
+          </div>
+          <span class="eq-caption">Zuccheri<small>糖</small></span>
+        </div>
+      </div>
+      <div class="flow-arrow" style="font-size: 2rem;">↓</div>
+      <div class="equation">
+        <div class="eq-item">
+          <div class="eq-box" style="background: #FFE8D0;">
+            <svg viewBox="0 0 60 60">
+              <circle cx="20" cy="20" r="4" fill="#6F4E37"/>
+              <circle cx="35" cy="25" r="5" fill="#6F4E37"/>
+              <circle cx="28" cy="40" r="4" fill="#6F4E37"/>
+              <circle cx="42" cy="42" r="5" fill="#6F4E37"/>
+            </svg>
+          </div>
+          <span class="eq-caption">Aromi<small>风味物质</small></span>
+        </div>
+        <span class="eq-sign">+</span>
+        <div class="eq-item">
+          <div class="eq-box" style="background: #D4A574;">
+            <svg viewBox="0 0 60 60">
+              <ellipse cx="30" cy="32" rx="18" ry="14" fill="#8B5A2B"/>
+              <ellipse cx="24" cy="26" rx="5" ry="3" fill="rgba(255,255,255,0.3)"/>
+            </svg>
+          </div>
+          <span class="eq-caption">Caramello<small>焦糖</small></span>
+        </div>
+      </div>`
+  },
+  {
+    id: 'roasting', category: 'Trasformazione', category_zh: '转化',
+    it: "La tostatura", zh: "咖啡烘焙",
+    foot_it: "Dal verde al marrone: il calore trasforma il chicco", foot_zh: "从青涩到醇厚 · 热力造就豆香",
+    tts: "La tostatura: dal chicco verde al caffè macinato attraverso il calore.",
+    body: `
+      <div class="flow">
+        <div class="flow-node">
+          <div class="eq-box">
+            <svg viewBox="0 0 60 60"><ellipse cx="30" cy="30" rx="14" ry="20" fill="#A8B86C"/><path d="M 30 12 Q 27 30 30 48" stroke="#5C6B30" stroke-width="2" fill="none"/></svg>
+          </div>
+          <span class="eq-caption">Chicco verde<small>生豆</small></span>
+        </div>
+        <div class="flow-arrow">→</div>
+        <svg width="40" height="40" viewBox="0 0 60 60">
+          <path d="M 30 45 Q 20 30 30 15 Q 40 30 30 45 Z" fill="#FF6B35"/>
+          <path d="M 30 40 Q 25 30 30 22 Q 35 30 30 40 Z" fill="#FFD23F"/>
+        </svg>
+        <div class="flow-arrow">→</div>
+        <div class="flow-node">
+          <div class="eq-box">
+            <svg viewBox="0 0 60 60"><ellipse cx="30" cy="30" rx="14" ry="20" fill="url(#beanGrad)"/><path d="M 30 12 Q 27 30 30 48" stroke="#2B1A15" stroke-width="2" fill="none"/></svg>
+          </div>
+          <span class="eq-caption">Tostato<small>咖啡豆</small></span>
+        </div>
+      </div>
+      <div class="flow-arrow" style="font-size: 2rem;">↓</div>
+      <div class="flow-node">
+        <svg width="100" height="70" viewBox="0 0 100 70">
+          <path d="M 15 30 L 85 30 L 78 60 L 22 60 Z" fill="#6F4E37" stroke="#3E2723" stroke-width="2"/>
+          <ellipse cx="50" cy="34" rx="35" ry="6" fill="#4A2C20"/>
+          <circle cx="35" cy="33" r="2" fill="#2B1A15"/>
+          <circle cx="50" cy="34" r="2" fill="#2B1A15"/>
+          <circle cx="65" cy="33" r="2" fill="#2B1A15"/>
+        </svg>
+        <span class="eq-caption" style="font-size: 1.2rem; margin-top: 6px;">Caffè macinato<small>咖啡粉</small></span>
+      </div>`
+  },
+  {
+    id: 'methods', category: 'Preparazione', category_zh: '冲煮',
+    it: "Metodi di preparazione", zh: "三种冲煮方式",
+    foot_it: "Tre modi di estrarre l'anima del caffè", foot_zh: "三种方式 · 萃取咖啡的灵魂",
+    tts: "Tre metodi di preparazione: caffè filtro, caffè freddo, espresso.",
+    body: `
+      <div class="equation" style="gap: 14px;">
+        <div class="eq-item">
+          <svg width="60" height="70" viewBox="0 0 70 90">
+            <rect x="15" y="5" width="40" height="22" rx="4" fill="#87CEEB" stroke="#4A90B8" stroke-width="2"/>
+            <path d="M 20 27 L 25 45 L 45 45 L 50 27" fill="#6F4E37"/>
+            <ellipse cx="35" cy="70" rx="20" ry="6" fill="#FFF" stroke="#6F4E37" stroke-width="2"/>
+            <path d="M 15 60 Q 35 52 55 60 L 55 75 Q 35 82 15 75 Z" fill="#FFF" stroke="#6F4E37" stroke-width="2"/>
+          </svg>
+          <span class="eq-caption">Filtro<small>手冲</small></span>
+        </div>
+        <div class="eq-item">
+          <svg width="60" height="70" viewBox="0 0 70 90">
+            <rect x="15" y="15" width="40" height="20" rx="3" fill="#87CEEB" stroke="#4A90B8" stroke-width="2"/>
+            <rect x="17" y="19" width="36" height="10" fill="#6F4E37"/>
+            <path d="M 35 37 L 35 47" stroke="#6F4E37" stroke-width="2"/>
+            <ellipse cx="35" cy="72" rx="20" ry="6" fill="#FFF" stroke="#E37B47" stroke-width="2"/>
+            <path d="M 15 62 Q 35 54 55 62 L 55 77 Q 35 84 15 77 Z" fill="#FFF" stroke="#E37B47" stroke-width="2"/>
+          </svg>
+          <span class="eq-caption">Freddo<small>冷萃</small></span>
+        </div>
+        <div class="eq-item">
+          <svg width="70" height="70" viewBox="0 0 80 90">
+            <rect x="10" y="10" width="60" height="70" rx="4" fill="none" stroke="#E8B84C" stroke-width="3"/>
+            <rect x="28" y="22" width="24" height="16" rx="2" fill="#6F4E37"/>
+            <path d="M 30 45 L 50 45 L 48 58 L 32 58 Z" fill="#FFF" stroke="#E8B84C" stroke-width="2"/>
+            <ellipse cx="40" cy="47" rx="9" ry="2" fill="#6F4E37"/>
+            <line x1="40" y1="58" x2="40" y2="70" stroke="#E8B84C" stroke-width="3"/>
+          </svg>
+          <span class="eq-caption">Espresso<small>意式浓缩</small></span>
+        </div>
+      </div>`
+  },
+  {
+    id: 'filtro', category: 'Preparazione', category_zh: '冲煮',
+    it: "Caffè filtro", zh: "手冲咖啡",
+    foot_it: "Acqua calda versata lentamente sui chicchi macinati", foot_zh: "热水缓缓浇淋 · 咖啡粉徐徐释放风味",
+    tts: "Caffè filtro: acqua calda versata lentamente sui chicchi macinati.",
+    body: `
+      <div class="icon-circle">
+        <svg viewBox="0 0 120 140">
+          <rect x="30" y="15" width="60" height="30" rx="5" fill="#87CEEB" stroke="#4A90B8" stroke-width="3"/>
+          <path d="M 40 45 L 48 75 L 72 75 L 80 45" fill="#6F4E37"/>
+          <ellipse cx="60" cy="110" rx="32" ry="8" fill="#FFF" stroke="#6F4E37" stroke-width="3"/>
+          <path d="M 30 95 Q 60 85 90 95 L 90 118 Q 60 128 30 118 Z" fill="#FFF" stroke="#6F4E37" stroke-width="3"/>
+          <ellipse cx="60" cy="97" rx="28" ry="5" fill="#3E2723"/>
+          <g class="steam">
+            <path d="M 45 8 Q 48 -2 50 8" stroke="#A8875E" stroke-width="2" fill="none" opacity="0.5"/>
+            <path d="M 60 5 Q 63 -5 65 5" stroke="#A8875E" stroke-width="2" fill="none" opacity="0.5"/>
+            <path d="M 75 8 Q 78 -2 80 8" stroke="#A8875E" stroke-width="2" fill="none" opacity="0.5"/>
+          </g>
+        </svg>
+      </div>
+      <div class="result-badge">Caffè Filtro<span class="zh">手冲咖啡</span></div>`
+  },
+  {
+    id: 'freddo', category: 'Preparazione', category_zh: '冲煮',
+    it: "Caffè Freddo", zh: "冷萃咖啡",
+    foot_it: "Acqua fredda, estrazione lenta di 12-24 ore", foot_zh: "冷水慢萃 · 浸泡 12-24 小时 · 顺滑低酸",
+    tts: "Caffè freddo: estrazione a freddo di dodici-ventiquattro ore.",
+    body: `
+      <div class="icon-circle">
+        <svg viewBox="0 0 120 140">
+          <rect x="30" y="20" width="60" height="30" rx="4" fill="#87CEEB" stroke="#4A90B8" stroke-width="3"/>
+          <rect x="33" y="25" width="54" height="15" fill="#6F4E37"/>
+          <path d="M 60 52 L 60 70" stroke="#6F4E37" stroke-width="2" stroke-dasharray="3 3"/>
+          <circle cx="60" cy="75" r="3" fill="#6F4E37"/>
+          <ellipse cx="60" cy="112" rx="30" ry="7" fill="#FFF" stroke="#E37B47" stroke-width="3"/>
+          <path d="M 32 98 Q 60 88 88 98 L 88 120 Q 60 130 32 120 Z" fill="#FFF" stroke="#E37B47" stroke-width="3"/>
+          <ellipse cx="60" cy="100" rx="26" ry="5" fill="#4A2C20"/>
+        </svg>
+      </div>
+      <div class="result-badge">Estrazione a freddo<span class="zh">冷萃</span></div>`
+  },
+  {
+    id: 'espresso', category: 'Preparazione', category_zh: '冲煮',
+    it: "Espresso", zh: "意式浓缩",
+    foot_it: "Base di tutte le bevande italiane al caffè", foot_zh: "所有意式咖啡饮品的灵魂基底",
+    tts: "Espresso: base di tutte le bevande italiane al caffè.",
+    body: `
+      <div class="icon-circle">
+        <svg viewBox="0 0 120 140">
+          <rect x="15" y="15" width="90" height="100" rx="6" fill="none" stroke="#E8B84C" stroke-width="5"/>
+          <rect x="40" y="35" width="40" height="24" rx="3" fill="#6F4E37"/>
+          <line x1="47" y1="33" x2="47" y2="22" stroke="#E8B84C" stroke-width="2"/>
+          <line x1="60" y1="33" x2="60" y2="22" stroke="#E8B84C" stroke-width="2"/>
+          <line x1="73" y1="33" x2="73" y2="22" stroke="#E8B84C" stroke-width="2"/>
+          <line x1="60" y1="59" x2="60" y2="72" stroke="#E8B84C" stroke-width="4"/>
+          <path d="M 42 75 L 78 75 L 74 95 L 46 95 Z" fill="#FFF" stroke="#E8B84C" stroke-width="3"/>
+          <ellipse cx="60" cy="78" rx="16" ry="3" fill="#6F4E37"/>
+        </svg>
+      </div>
+      <div class="result-badge">Espresso<span class="zh">意式浓缩</span></div>`
+  },
+  {
+    id: 'americano', category: 'Bevande', category_zh: '饮品',
+    it: "Caffè Americano", zh: "美式咖啡",
+    foot_it: "Espresso allungato con acqua calda", foot_zh: "浓缩加热水 · 淡雅醇厚",
+    tts: "Caffè americano: espresso più acqua calda.",
+    body: `
+      <div class="equation">
+        <div class="eq-item">
+          <div class="eq-box"><svg viewBox="0 0 60 60"><path d="M 15 15 L 45 15 L 42 45 L 18 45 Z" fill="#FFF" stroke="#6F4E37" stroke-width="2"/><ellipse cx="30" cy="18" rx="13" ry="2.5" fill="#3E2723"/></svg></div>
+          <span class="eq-caption">Espresso<small>意式浓缩</small></span>
+        </div>
+        <span class="eq-sign">+</span>
+        <div class="eq-item">
+          <div class="eq-box"><svg viewBox="0 0 60 60"><rect x="18" y="15" width="24" height="32" rx="3" fill="none" stroke="#4A90B8" stroke-width="2.5"/><path d="M 20 25 Q 30 22 40 25 L 40 43 Q 30 46 20 43 Z" fill="#B8E0F0" opacity="0.7"/></svg></div>
+          <span class="eq-caption">Acqua<small>水</small></span>
+        </div>
+        <span class="eq-sign">=</span>
+      </div>
+      <div class="result-badge">Americano<span class="zh">美式</span></div>`
+  },
+  {
+    id: 'latte', category: 'Bevande', category_zh: '饮品',
+    it: "Caffè Latte", zh: "拿铁",
+    foot_it: "Morbido e vellutato, con abbondante latte caldo", foot_zh: "温润顺滑 · 浓缩与热牛奶的融合",
+    tts: "Caffè latte: espresso più latte caldo.",
+    body: `
+      <div class="equation">
+        <div class="eq-item">
+          <div class="eq-box"><svg viewBox="0 0 60 60"><path d="M 15 15 L 45 15 L 42 45 L 18 45 Z" fill="#FFF" stroke="#6F4E37" stroke-width="2"/><ellipse cx="30" cy="18" rx="13" ry="2.5" fill="#3E2723"/></svg></div>
+          <span class="eq-caption">Espresso<small>意式浓缩</small></span>
+        </div>
+        <span class="eq-sign">+</span>
+        <div class="eq-item">
+          <div class="eq-box"><svg viewBox="0 0 60 60"><rect x="18" y="15" width="24" height="32" rx="3" fill="none" stroke="#E8B84C" stroke-width="2.5"/><path d="M 20 25 Q 30 22 40 25 L 40 43 Q 30 46 20 43 Z" fill="#FFF6E0"/></svg></div>
+          <span class="eq-caption">Latte<small>牛奶</small></span>
+        </div>
+        <span class="eq-sign">=</span>
+      </div>
+      <div class="result-badge">Caffè Latte<span class="zh">拿铁</span></div>`
+  },
+  {
+    id: 'mocaccino', category: 'Bevande', category_zh: '饮品',
+    it: "Mocaccino", zh: "摩卡",
+    foot_it: "Il dolce incontro tra caffè e cioccolato", foot_zh: "咖啡与巧克力的甜蜜相遇",
+    tts: "Mocaccino: espresso, latte e cioccolato.",
+    body: `
+      <div class="equation">
+        <div class="eq-item">
+          <div class="eq-box"><svg viewBox="0 0 60 60"><path d="M 15 15 L 45 15 L 42 45 L 18 45 Z" fill="#FFF" stroke="#6F4E37" stroke-width="2"/><ellipse cx="30" cy="18" rx="13" ry="2.5" fill="#3E2723"/></svg></div>
+          <span class="eq-caption">Espresso<small>浓缩</small></span>
+        </div>
+        <span class="eq-sign">+</span>
+        <div class="eq-item">
+          <div class="eq-box"><svg viewBox="0 0 60 60"><rect x="20" y="15" width="20" height="32" rx="2" fill="none" stroke="#E8B84C" stroke-width="2"/><path d="M 22 25 Q 30 22 38 25 L 38 43 Q 30 46 22 43 Z" fill="#FFF6E0"/></svg></div>
+          <span class="eq-caption">Latte<small>牛奶</small></span>
+        </div>
+        <span class="eq-sign">+</span>
+        <div class="eq-item">
+          <div class="eq-box"><svg viewBox="0 0 60 60"><rect x="15" y="18" width="30" height="24" rx="2" fill="#4A2C20" stroke="#2B1A15" stroke-width="2"/><line x1="25" y1="18" x2="25" y2="42" stroke="#2B1A15" stroke-width="1"/><line x1="35" y1="18" x2="35" y2="42" stroke="#2B1A15" stroke-width="1"/><line x1="15" y1="30" x2="45" y2="30" stroke="#2B1A15" stroke-width="1"/></svg></div>
+          <span class="eq-caption">Cioccolato<small>巧克力</small></span>
+        </div>
+      </div>
+      <div class="result-badge">Mocaccino<span class="zh">摩卡</span></div>`
+  },
+  {
+    id: 'cappuccino', category: 'Bevande', category_zh: '饮品',
+    it: "Cappuccino", zh: "卡布奇诺",
+    foot_it: "1/3 espresso, 1/3 latte, 1/3 schiuma — la regola d'oro italiana", foot_zh: "三等分比例 · 意式咖啡的黄金法则",
+    tts: "Cappuccino: un terzo espresso, un terzo latte, un terzo schiuma.",
+    body: `
+      <div class="equation">
+        <div class="eq-item">
+          <div class="eq-box"><svg viewBox="0 0 60 60"><path d="M 15 15 L 45 15 L 42 45 L 18 45 Z" fill="#FFF" stroke="#6F4E37" stroke-width="2"/><ellipse cx="30" cy="18" rx="13" ry="2.5" fill="#3E2723"/></svg></div>
+          <span class="eq-caption">Espresso<small>浓缩</small></span>
+        </div>
+        <span class="eq-sign">+</span>
+        <div class="eq-item">
+          <div class="eq-box"><svg viewBox="0 0 60 60"><rect x="20" y="15" width="20" height="32" rx="2" fill="none" stroke="#E8B84C" stroke-width="2"/><path d="M 22 25 Q 30 22 38 25 L 38 43 Q 30 46 22 43 Z" fill="#FFF6E0"/></svg></div>
+          <span class="eq-caption">Latte<small>牛奶</small></span>
+        </div>
+        <span class="eq-sign">+</span>
+        <div class="eq-item">
+          <div class="eq-box"><svg viewBox="0 0 60 60"><rect x="20" y="15" width="20" height="32" rx="2" fill="none" stroke="#E8B84C" stroke-width="2"/><circle cx="25" cy="22" r="3" fill="#FFF"/><circle cx="32" cy="20" r="4" fill="#FFF"/><circle cx="38" cy="23" r="3" fill="#FFF"/><path d="M 22 28 Q 30 26 38 28 L 38 43 Q 30 46 22 43 Z" fill="#FFF6E0"/></svg></div>
+          <span class="eq-caption">Schiuma<small>奶泡</small></span>
+        </div>
+      </div>
+      <div class="result-badge">Cappuccino<span class="zh">卡布奇诺</span></div>`
+  },
+  {
+    id: 'flatwhite', category: 'Bevande', category_zh: '饮品',
+    it: "Bianco Vellutato", zh: "馥芮白",
+    foot_it: "Più caffè, meno schiuma — cremoso e deciso", foot_zh: "咖啡浓郁 · 奶泡细腻 · 口感绵密",
+    tts: "Bianco vellutato: ristretto con latte cremoso.",
+    body: `
+      <div class="equation">
+        <div class="eq-item">
+          <div class="eq-box"><svg viewBox="0 0 60 60"><path d="M 18 18 L 42 18 L 40 42 L 20 42 Z" fill="#FFF" stroke="#6F4E37" stroke-width="2"/><ellipse cx="30" cy="20" rx="10" ry="2" fill="#3E2723"/></svg></div>
+          <span class="eq-caption">Ristretto<small>精萃咖啡</small></span>
+        </div>
+        <span class="eq-sign">+</span>
+        <div class="eq-item">
+          <div class="eq-box"><svg viewBox="0 0 60 60"><rect x="20" y="13" width="20" height="36" rx="2" fill="none" stroke="#E8B84C" stroke-width="2"/><path d="M 22 22 Q 30 19 38 22 L 38 45 Q 30 48 22 45 Z" fill="#FFF6E0"/><path d="M 22 22 Q 30 19 38 22 L 38 27 Q 30 25 22 27 Z" fill="#FFF"/></svg></div>
+          <span class="eq-caption">Latte<small>牛奶</small></span>
+        </div>
+        <span class="eq-sign">=</span>
+      </div>
+      <div class="result-badge">Bianco Vellutato<span class="zh">馥芮白</span></div>`
+  },
+  {
+    id: 'end', category: 'Grazie', category_zh: '结语',
+    it: "Grazie per l'attenzione", zh: "谢谢观赏",
+    foot_it: "Buon caffè a tutti!", foot_zh: "愿你每一杯都有好心情",
+    tts: "Grazie per l'attenzione. Buon caffè a tutti!",
+    body: `
+      <svg width="100" height="110" viewBox="0 0 90 100">
+        <path d="M 15 35 L 75 35 L 70 85 L 20 85 Z" fill="#FFF" stroke="#6F4E37" stroke-width="3"/>
+        <ellipse cx="45" cy="38" rx="25" ry="4" fill="#3E2723"/>
+        <path d="M 75 48 Q 87 48 87 62 Q 87 72 73 72" fill="none" stroke="#6F4E37" stroke-width="3"/>
+        <g class="steam">
+          <path d="M 30 25 Q 33 15 35 25" stroke="#A8875E" stroke-width="2" fill="none" opacity="0.6"/>
+          <path d="M 45 22 Q 48 12 50 22" stroke="#A8875E" stroke-width="2" fill="none" opacity="0.6"/>
+          <path d="M 60 25 Q 63 15 65 25" stroke="#A8875E" stroke-width="2" fill="none" opacity="0.6"/>
+        </g>
+      </svg>`
+  }
+];
+
+const CATEGORIES = [
+  { key: 'Origine',         zh: '起源',   icon: '🌱' },
+  { key: 'Trasformazione',  zh: '转化',   icon: '🔥' },
+  { key: 'Preparazione',    zh: '冲煮',   icon: '☕' },
+  { key: 'Bevande',         zh: '饮品',   icon: '🥛' }
+];
+
+/* ==================== STATE ==================== */
+const STORAGE_KEYS = {
+  fav: 'caffe-app-favorites',
+  learned: 'caffe-app-learned',
+  last: 'caffe-app-last-position'
+};
+let state = {
+  view: 'home',
+  currentLessons: [],
+  slideIndex: 0,
+  fcIndex: 0,
+  fcFlipped: false,
+  favorites: JSON.parse(localStorage.getItem(STORAGE_KEYS.fav) || '[]'),
+  learned:   JSON.parse(localStorage.getItem(STORAGE_KEYS.learned) || '[]'),
+};
+
+function saveState() {
+  localStorage.setItem(STORAGE_KEYS.fav, JSON.stringify(state.favorites));
+  localStorage.setItem(STORAGE_KEYS.learned, JSON.stringify(state.learned));
+  updateHomeStats();
+  updateFavCount();
+}
+
+/* ==================== HOME ==================== */
+function renderHome() {
+  const grid = document.getElementById('categoriesGrid');
+  grid.innerHTML = CATEGORIES.map(cat => {
+    const count = LESSONS.filter(l => l.category === cat.key).length;
+    return `
+      <button class="cat-card" onclick="startLearn('${cat.key}')">
+        <div class="cat-icon">${cat.icon}</div>
+        <div class="cat-name">${cat.key}</div>
+        <div class="cat-name-zh">${cat.zh}</div>
+        <div class="cat-count">${count} lezioni · ${count} 课</div>
+      </button>`;
+  }).join('');
+  updateHomeStats();
+}
+function updateHomeStats() {
+  document.getElementById('statTotal').textContent   = LESSONS.length;
+  document.getElementById('statLearned').textContent = state.learned.length;
+  document.getElementById('statFav').textContent     = state.favorites.length;
+}
+function updateFavCount() {
+  document.getElementById('favCount').textContent = state.favorites.length;
+}
+
+/* ==================== VIEW ROUTING ==================== */
+function showView(name) {
+  document.querySelectorAll('.view').forEach(v => v.classList.remove('active'));
+  const target = document.getElementById('view-' + name);
+  if (target) target.classList.add('active');
+  state.view = name;
+  document.querySelectorAll('.tab-btn').forEach(t => {
+    t.classList.toggle('active', t.dataset.view === name);
+  });
+  if (name === 'flashcard') startFlashcards();
+  if (name === 'fav') renderFavorites();
+  if (name === 'home') renderHome();
+}
+
+/* ==================== LEARN MODE ==================== */
+function startLearn(category) {
+  if (category === 'all') state.currentLessons = [...LESSONS];
+  else state.currentLessons = LESSONS.filter(l => l.category === category);
+  if (state.currentLessons.length === 0) return;
+  state.slideIndex = 0;
+  renderSlides();
+  showView('lesson');
+}
+
+function renderSlides() {
+  const container = document.getElementById('slideContainer');
+  container.innerHTML = state.currentLessons.map((l, i) => renderSlide(l, i)).join('');
+  showSlide(0);
+}
+
+function renderSlide(l, i) {
+  const isFav = state.favorites.includes(l.id);
+  const isLearned = state.learned.includes(l.id);
+  return `
+    <div class="slide${i === 0 ? ' active' : ''}" data-index="${i}">
+      <div class="slide-category">${l.category} · ${l.category_zh}</div>
+      <div class="slide-head">
+        <h1 class="it-title">${l.it}</h1>
+        <h2 class="zh-title">${l.zh}</h2>
+        <div class="action-row">
+          <button class="action-btn" onclick="speakLesson('${l.id}')" aria-label="Pronuncia">🔊</button>
+          <button class="action-btn ${isFav ? 'active-fav' : ''}" onclick="toggleFav('${l.id}', this)" aria-label="Preferito">❤️</button>
+          <button class="action-btn ${isLearned ? 'active-learn' : ''}" onclick="toggleLearned('${l.id}', this)" aria-label="Imparato">✓</button>
+        </div>
+      </div>
+      <div class="slide-body">${l.body}</div>
+      <div class="slide-foot">${l.foot_it}<span class="zh">${l.foot_zh}</span></div>
+    </div>`;
+}
+
+function showSlide(i) {
+  const slides = document.querySelectorAll('#slideContainer .slide');
+  slides.forEach(s => s.classList.remove('active'));
+  if (slides[i]) slides[i].classList.add('active');
+  state.slideIndex = i;
+  const total = state.currentLessons.length;
+  document.getElementById('pageIndicator').textContent = `${i+1}/${total}`;
+  document.getElementById('progressFill').style.width = `${((i+1)/total)*100}%`;
+  document.getElementById('prevBtn').disabled = i === 0;
+  document.getElementById('nextBtn').disabled = i === total - 1;
+}
+function nextSlide() { if (state.slideIndex < state.currentLessons.length - 1) showSlide(state.slideIndex + 1); }
+function prevSlide() { if (state.slideIndex > 0) showSlide(state.slideIndex - 1); }
+
+/* ==================== FAV / LEARN TOGGLES ==================== */
+function toggleFav(id, btn) {
+  const idx = state.favorites.indexOf(id);
+  if (idx >= 0) { state.favorites.splice(idx, 1); btn.classList.remove('active-fav'); }
+  else { state.favorites.push(id); btn.classList.add('active-fav'); }
+  saveState();
+}
+function toggleLearned(id, btn) {
+  const idx = state.learned.indexOf(id);
+  if (idx >= 0) { state.learned.splice(idx, 1); btn.classList.remove('active-learn'); }
+  else { state.learned.push(id); btn.classList.add('active-learn'); }
+  saveState();
+}
+
+/* ==================== FLASHCARDS ==================== */
+function startFlashcards() {
+  // shuffle
+  state.fcDeck = [...LESSONS].filter(l => l.id !== 'cover' && l.id !== 'end');
+  for (let i = state.fcDeck.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1));
+    [state.fcDeck[i], state.fcDeck[j]] = [state.fcDeck[j], state.fcDeck[i]];
+  }
+  state.fcIndex = 0;
+  state.fcFlipped = false;
+  renderFlashcard();
+}
+
+function renderFlashcard() {
+  const stage = document.getElementById('flashcardStage');
+  if (!state.fcDeck || state.fcDeck.length === 0) {
+    stage.innerHTML = `<div class="flashcard-empty">Nessuna flashcard disponibile<span class="zh">暂无闪卡</span></div>`;
+    return;
+  }
+  if (state.fcIndex >= state.fcDeck.length) {
+    stage.innerHTML = `
+      <div class="flashcard-empty">
+        🎉<br>Hai finito tutte le card!
+        <span class="zh">恭喜你学完所有闪卡！</span>
+        <button class="card-ctrl good" style="margin-top:20px;max-width:200px;" onclick="startFlashcards()">
+          Ricomincia<small>重新开始</small>
+        </button>
+      </div>`;
+    return;
+  }
+  const l = state.fcDeck[state.fcIndex];
+  const total = state.fcDeck.length;
+  document.getElementById('fcIndicator').textContent = `${state.fcIndex+1}/${total}`;
+  document.getElementById('fcProgress').style.width = `${((state.fcIndex+1)/total)*100}%`;
+  stage.innerHTML = `
+    <div class="flashcard ${state.fcFlipped ? 'flipped' : ''}" id="fcCard" onclick="flipCard()">
+      <div class="card-inner">
+        <div class="card-face front">
+          <span class="card-hint">tocca per girare · 点击翻面</span>
+          <div class="card-category">${l.category}</div>
+          <div class="it-big">${l.it}</div>
+          <button class="action-btn" style="margin-top:8px;" onclick="event.stopPropagation();speakLesson('${l.id}')">🔊</button>
+          <div class="desc-small" style="margin-top:14px;">${l.foot_it}</div>
+        </div>
+        <div class="card-face back">
+          <span class="card-hint">tocca per girare · 点击翻面</span>
+          <div class="card-category">${l.category_zh}</div>
+          <div class="zh-big">${l.zh}</div>
+          <div class="desc-small-zh" style="margin-top:14px;">${l.foot_zh}</div>
+        </div>
+      </div>
+    </div>
+    <div class="card-controls">
+      <button class="card-ctrl again" onclick="fcAnswer(false)">Di nuovo<small>再练一次</small></button>
+      <button class="card-ctrl good" onclick="fcAnswer(true)">L'ho imparato<small>我会了</small></button>
+    </div>`;
+}
+
+function flipCard() {
+  state.fcFlipped = !state.fcFlipped;
+  const c = document.getElementById('fcCard');
+  if (c) c.classList.toggle('flipped', state.fcFlipped);
+}
+
+function fcAnswer(learned) {
+  const l = state.fcDeck[state.fcIndex];
+  if (learned && l && !state.learned.includes(l.id)) {
+    state.learned.push(l.id);
+    saveState();
+  }
+  state.fcIndex++;
+  state.fcFlipped = false;
+  renderFlashcard();
+}
+
+/* ==================== FAVORITES VIEW ==================== */
+function renderFavorites() {
+  const container = document.getElementById('favListContainer');
+  if (state.favorites.length === 0) {
+    container.innerHTML = `
+      <div class="empty-state">
+        <span class="big-icon">⭐</span>
+        Nessun preferito ancora<br>
+        Tocca il cuore su una lezione per salvarla qui
+        <span class="zh">还没有收藏<br>在课程上点击心形按钮即可收藏</span>
+      </div>`;
+    return;
+  }
+  const favLessons = state.favorites.map(id => LESSONS.find(l => l.id === id)).filter(Boolean);
+  container.innerHTML = `<div class="fav-list">${favLessons.map(l => `
+    <button class="fav-item" onclick="openLessonById('${l.id}')">
+      <div class="fav-item-text">
+        <div class="fav-item-it">${l.it}</div>
+        <div class="fav-item-zh">${l.zh} · ${l.category_zh}</div>
+      </div>
+      <button class="fav-item-tts" onclick="event.stopPropagation();speakLesson('${l.id}')">🔊</button>
+    </button>
+  `).join('')}</div>`;
+}
+
+function openLessonById(id) {
+  state.currentLessons = [...LESSONS];
+  const idx = state.currentLessons.findIndex(l => l.id === id);
+  renderSlides();
+  showSlide(idx >= 0 ? idx : 0);
+  showView('lesson');
+}
+
+/* ==================== TTS ==================== */
+function speakLesson(id) {
+  const l = LESSONS.find(x => x.id === id);
+  if (!l) return;
+  if (!('speechSynthesis' in window)) {
+    alert('Il tuo browser non supporta la sintesi vocale.\n你的浏览器不支持语音合成。');
+    return;
+  }
+  window.speechSynthesis.cancel();
+  const u = new SpeechSynthesisUtterance(l.tts);
+  u.lang = 'it-IT';
+  u.rate = 0.9;
+  // Try to find an Italian voice
+  const voices = window.speechSynthesis.getVoices();
+  const itVoice = voices.find(v => v.lang && v.lang.startsWith('it'));
+  if (itVoice) u.voice = itVoice;
+  window.speechSynthesis.speak(u);
+}
+// Preload voices
+if ('speechSynthesis' in window) {
+  window.speechSynthesis.onvoiceschanged = () => {};
+}
+
+/* ==================== KEYBOARD + SWIPE ==================== */
+document.addEventListener('keydown', (e) => {
+  if (state.view === 'lesson') {
+    if (e.key === 'ArrowLeft') prevSlide();
+    if (e.key === 'ArrowRight' || e.key === ' ') { e.preventDefault(); nextSlide(); }
+  } else if (state.view === 'flashcard') {
+    if (e.key === ' ') { e.preventDefault(); flipCard(); }
+  }
+});
+let touchX = null;
+document.addEventListener('touchstart', e => touchX = e.touches[0].clientX, { passive: true });
+document.addEventListener('touchend', e => {
+  if (touchX === null) return;
+  const dx = e.changedTouches[0].clientX - touchX;
+  if (Math.abs(dx) > 50 && state.view === 'lesson') {
+    if (dx < 0) nextSlide(); else prevSlide();
+  }
+  touchX = null;
+}, { passive: true });
+
+/* ==================== FAV COUNTER BUTTON ==================== */
+document.getElementById('favCounter').addEventListener('click', () => showView('fav'));
+
+/* ==================== PWA ==================== */
+let deferredPrompt;
+window.addEventListener('beforeinstallprompt', (e) => {
+  e.preventDefault();
+  deferredPrompt = e;
+  const p = document.getElementById('installPrompt');
+  if (!localStorage.getItem('install-dismissed')) {
+    setTimeout(() => p.classList.add('show'), 3000);
+  }
+});
+document.getElementById('installBtn').addEventListener('click', async () => {
+  if (!deferredPrompt) return;
+  deferredPrompt.prompt();
+  const r = await deferredPrompt.userChoice;
+  if (r.outcome === 'accepted') {
+    localStorage.setItem('install-dismissed', '1');
+    document.getElementById('installPrompt').classList.remove('show');
+  }
+  deferredPrompt = null;
+});
+if ('serviceWorker' in navigator) {
+  window.addEventListener('load', () => {
+    navigator.serviceWorker.register('sw.js').catch(() => {});
+  });
+}
+
+/* ==================== INIT ==================== */
+renderHome();
+updateFavCount();
+</script>
+
+</body>
+</html>

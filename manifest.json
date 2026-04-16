@@ -1,0 +1,21 @@
+{
+  "name": "Il Mondo del Caffè · 咖啡世界",
+  "short_name": "Il Caffè",
+  "description": "Impara il vocabolario italiano del caffè · 学习咖啡的意大利语",
+  "start_url": "./",
+  "scope": "./",
+  "display": "standalone",
+  "orientation": "portrait",
+  "background_color": "#FAF3E7",
+  "theme_color": "#3E2723",
+  "lang": "it",
+  "icons": [
+    {
+      "src": "icon.svg",
+      "sizes": "any",
+      "type": "image/svg+xml",
+      "purpose": "any maskable"
+    }
+  ],
+  "categories": ["education", "lifestyle"]
+}
